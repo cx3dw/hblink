@@ -80,24 +80,28 @@
         let lastHeardData = [];
 
         function initWebSocket() {
+            console.log("Iniciando conexión WebSocket a:", wsUrl);
             ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
+                console.log("WebSocket OPEN exitoso.");
                 statusDot.classList.remove('bg-amber-500', 'bg-red-500');
                 statusDot.classList.add('bg-emerald-500', 'animate-none');
                 statusText.textContent = 'Conectado (WSS)';
             };
 
             ws.onmessage = (event) => {
+                console.log("Mensaje recibido del VPS:", event.data);
                 try {
                     const data = JSON.parse(event.data);
                     updateDashboard(data);
                 } catch (e) {
-                    console.error('Error al procesar el JSON:', e);
+                    console.error('El mensaje no es un JSON válido:', event.data);
                 }
             };
 
-            ws.onclose = () => {
+            ws.onclose = (event) => {
+                console.warn(`WebSocket cerrado (Código: ${event.code}, Razón: ${event.reason})`);
                 statusDot.classList.remove('bg-emerald-500');
                 statusDot.classList.add('bg-amber-500', 'animate-pulse');
                 statusText.textContent = 'Reconectando...';
@@ -105,6 +109,7 @@
             };
 
             ws.onerror = (error) => {
+                console.error('Error en WebSocket:', error);
                 statusDot.classList.remove('bg-emerald-500', 'bg-amber-500');
                 statusDot.classList.add('bg-red-500');
                 statusText.textContent = 'Error de conexión';
@@ -114,7 +119,6 @@
         function updateDashboard(data) {
             if (!data) return;
 
-            // Actualizar Llamada Activa si viene el paquete correspondiente
             if (data.CALLSIGN) {
                 activeCallDiv.innerHTML = `
                     <div class="text-lg font-bold text-emerald-400">${data.CALLSIGN}</div>
@@ -123,7 +127,6 @@
                 `;
             }
 
-            // Si HBLink envía un registro para la tabla Last Heard
             if (data.TABLE_UPDATE || data.CALLSIGN) {
                 const now = new Date().toLocaleTimeString();
                 lastHeardData.unshift({
@@ -134,7 +137,6 @@
                     ts: data.TS || '-'
                 });
 
-                // Mantener solo los últimos 10 registros
                 if (lastHeardData.length > 10) lastHeardData.pop();
 
                 renderTable();
