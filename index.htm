@@ -1,114 +1,59 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBLink - Panel UruguayNet</title>
+    <title>DMR Dashboard - UruguayNet</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkbg: '#0f172a',
-                        cardbg: '#1e293b',
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome para iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-darkbg text-slate-100 font-sans min-h-screen flex flex-col">
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- Header / Barra Superior -->
-    <header class="bg-cardbg border-b border-slate-800 px-6 py-4 flex justify-between items-center shadow-md">
-        <div class="flex items-center space-x-3">
-            <div class="bg-blue-600 p-2 rounded-lg text-white">
-                <i class="fa-solid fa-tower-broadcast text-lg"></i>
+    <!-- Header / Navbar -->
+    <header class="bg-slate-800 border-b border-slate-700 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <span class="inline-block w-3 h-3 rounded-full bg-amber-500 animate-pulse" id="status-dot"></span>
+                <h1 class="text-xl font-bold tracking-wide">DMR Dashboard UruguayNet</h1>
             </div>
-            <div>
-                <h1 class="font-bold text-lg tracking-wide">HBLink <span class="text-blue-500">UruguayNet</span></h1>
-                <p class="text-xs text-slate-400">Red Personal DMR</p>
-            </div>
-        </div>
-        <!-- Estado de Conexión WebSocket -->
-        <div id="status-container" class="flex items-center space-x-2 bg-slate-900/60 px-3 py-1.5 rounded-full border border-slate-700/50">
-            <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-            <span id="status-text" class="text-xs font-medium text-amber-400">Conectando...</span>
+            <div class="text-sm text-slate-400" id="status-text">Conectando...</div>
         </div>
     </header>
 
-    <!-- Contenido Principal -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
-
-        <!-- Sección de Llamada Activa (Live Call Banner) -->
-        <section class="bg-cardbg border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
-            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500"></div>
-            
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div class="space-y-1">
-                    <div class="flex items-center space-x-2">
-                        <span class="bg-blue-500/10 text-blue-400 text-xs px-2.5 py-0.5 rounded-full font-semibold uppercase tracking-wider border border-blue-500/20">
-                            Llamada Activa
-                        </span>
-                        <span id="active-time" class="text-xs text-slate-400"><i class="fa-regular fa-clock mr-1"></i> Sin actividad</span>
-                    </div>
-                    <div class="text-2xl font-extrabold tracking-tight text-white flex items-center space-x-3 pt-1">
-                        <span id="active-callsign" class="text-blue-400 font-mono">---</span>
-                        <span id="active-id" class="text-sm font-normal text-slate-400 bg-slate-800 px-2.5 py-1 rounded-md">ID: ---</span>
-                    </div>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8 w-full flex-grow grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Tarjeta de Llamada Activa -->
+        <section class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg md:col-span-1 flex flex-col justify-between">
+            <div>
+                <h2 class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-2">Llamada Activa</h2>
+                <div id="active-call" class="space-y-3">
+                    <p class="text-slate-400 text-sm italic">Esperando tráfico en el sistema...</p>
                 </div>
-
-                <!-- Detalles de la Transmisión -->
-                <div class="grid grid-cols-3 gap-3 w-full md:w-auto">
-                    <div class="bg-slate-900/80 px-4 py-2.5 rounded-xl border border-slate-800 text-center">
-                        <span class="block text-[10px] text-slate-400 uppercase tracking-wider">Talk Group</span>
-                        <span id="active-tg" class="text-lg font-bold text-white font-mono">TG ---</span>
-                    </div>
-                    <div class="bg-slate-900/80 px-4 py-2.5 rounded-xl border border-slate-800 text-center">
-                        <span class="block text-[10px] text-slate-400 uppercase tracking-wider">Timeslot</span>
-                        <span id="active-slot" class="text-lg font-bold text-white font-mono">TS -</span>
-                    </div>
-                    <div class="bg-slate-900/80 px-4 py-2.5 rounded-xl border border-slate-800 text-center">
-                        <span class="block text-[10px] text-slate-400 uppercase tracking-wider">Sistema</span>
-                        <span id="active-system" class="text-sm font-bold text-slate-200 truncate max-w-[100px] inline-block">UruguayNet</span>
-                    </div>
-                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-700/60 text-xs text-slate-500 flex justify-between">
+                <span>Modo: VPS WSS</span>
+                <span id="active-ts">-</span>
             </div>
         </section>
 
-        <!-- Tabla Last Heard (Últimas Transmisiones) -->
-        <section class="bg-cardbg border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
-            <div class="p-5 border-b border-slate-800 flex justify-between items-center">
-                <h2 class="font-bold text-base flex items-center space-x-2">
-                    <i class="fa-solid fa-list-ul text-blue-500"></i>
-                    <span>Últimas Transmisiones (Last Heard)</span>
-                </h2>
-                <span class="text-xs text-slate-400">Actualización en vivo</span>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+        <!-- Tabla de Últimas Escuchas (Last Heard) -->
+        <section class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg md:col-span-2 flex flex-col">
+            <h2 class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-4">Últimas Transmisiones (Last Heard)</h2>
+            <div class="overflow-x-auto flex-grow">
+                <table class="w-full text-left text-sm">
                     <thead>
-                        <tr class="bg-slate-900/50 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
-                            <th class="py-3 px-4 font-semibold">Hora</th>
-                            <th class="py-3 px-4 font-semibold">Indicativo (Callsign)</th>
-                            <th class="py-3 px-4 font-semibold">DMR ID</th>
-                            <th class="py-3 px-4 font-semibold">Talk Group</th>
-                            <th class="py-3 px-4 font-semibold">Slot</th>
-                            <th class="py-3 px-4 font-semibold">Duración</th>
+                        <tr class="border-b border-slate-700 text-slate-400">
+                            <th class="pb-3 font-medium">Hora</th>
+                            <th class="pb-3 font-medium">Indicativo</th>
+                            <th class="pb-3 font-medium">Nombre / ID</th>
+                            <th class="pb-3 font-medium">Talkgroup (TG)</th>
+                            <th class="pb-3 font-medium">Slot</th>
                         </tr>
                     </thead>
-                    <tbody id="last-heard-body" class="divide-y divide-slate-800/60 text-sm">
-                        <!-- Las filas se agregarán dinámicamente -->
-                        <tr id="empty-row">
-                            <td colspan="6" class="py-8 text-center text-slate-500 italic">
-                                Esperando transmisiones desde HBLink...
-                            </td>
+                    <tbody id="last-heard-body" class="divide-y divide-slate-700/50">
+                        <tr>
+                            <td colspan="5" class="py-4 text-center text-slate-500 italic">Sin registros recientes.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -118,104 +63,70 @@
     </main>
 
     <!-- Footer -->
-    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800/60 mt-auto">
-        HBLink Panel &bull; 7481uruguaynet.2mydns.net
+    <footer class="bg-slate-800 border-t border-slate-700 text-center py-4 text-xs text-slate-500">
+        HBLink3 Dashboard &bull; Conectado a HBLink VPS
     </footer>
 
-    <!-- Lógica de Conexión WebSocket -->
+    <!-- Script de Conexión WebSocket Seguro -->
     <script>
-        // Dominio de tu VPS
-        const wsUrl = 'ws://7481uruguaynet.2mydns.net:9100';
-        let socket;
+        // URL segura apuntando al Proxy Nginx configurado en el VPS
+        const wsUrl = 'wss://7481uruguaynet.2mydns.net/ws';
+        
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        const lastHeardBody = document.getElementById('last-heard-body');
+        const activeCallDiv = document.getElementById('active-call');
 
-        function updateStatus(connected) {
-            const dot = document.getElementById('status-dot');
-            const text = document.getElementById('status-text');
-            
-            if (connected) {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
-                text.className = "text-xs font-medium text-emerald-400";
-                text.innerText = "Conectado";
-            } else {
-                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse";
-                text.className = "text-xs font-medium text-amber-400";
-                text.innerText = "Reconectando...";
-            }
-        }
+        let ws;
 
-        function connectWebSocket() {
-            socket = new WebSocket(wsUrl);
+        function initWebSocket() {
+            ws = new WebSocket(wsUrl);
 
-            socket.onopen = function() {
-                console.log("Conectado exitosamente a 7481uruguaynet.2mydns.net:9100");
-                updateStatus(true);
+            ws.onopen = () => {
+                statusDot.classList.remove('bg-amber-500', 'bg-red-500');
+                statusDot.classList.add('bg-emerald-500', 'animate-none');
+                statusText.textContent = 'Conectado (WSS)';
+                console.log('Conexión WebSocket establecida correctamente.');
             };
 
-            socket.onmessage = function(event) {
+            ws.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    
-                    // Quitar la fila de espera la primera vez que entran datos
-                    const emptyRow = document.getElementById('empty-row');
-                    if (emptyRow) emptyRow.remove();
-
-                    // Procesamiento de tramas de HBLink3 / HBMonitor
-                    if (data.callsign || data.source_id) {
-                        updateActiveCall(data);
-                        addLastHeardRow(data);
-                    }
+                    updateDashboard(data);
                 } catch (e) {
-                    console.error("Error interpretando paquete WebSocket:", e);
+                    console.error('Error al procesar el mensaje JSON:', e);
                 }
             };
 
-            socket.onclose = function() {
-                updateStatus(false);
-                setTimeout(connectWebSocket, 3000); // Reintento de conexión cada 3 segundos
+            ws.onclose = () => {
+                statusDot.classList.remove('bg-emerald-500');
+                statusDot.classList.add('bg-amber-500', 'animate-pulse');
+                statusText.textContent = 'Reconectando...';
+                // Reintentar conexión automáticamente cada 3 segundos
+                setTimeout(initWebSocket, 3000);
             };
 
-            socket.onerror = function(err) {
-                console.error("Error en socket:", err);
-                socket.close();
+            ws.onerror = (error) => {
+                console.error('Error en WebSocket:', error);
+                statusDot.classList.remove('bg-emerald-500', 'bg-amber-500');
+                statusDot.classList.add('bg-red-500');
+                statusText.textContent = 'Error de conexión';
             };
         }
 
-        function updateActiveCall(data) {
-            document.getElementById('active-callsign').innerText = data.callsign || 'Desconocido';
-            document.getElementById('active-id').innerText = 'ID: ' + (data.source_id || data.id || '---');
-            document.getElementById('active-tg').innerText = 'TG ' + (data.dest_id || data.tg || '---');
-            document.getElementById('active-slot').innerText = 'TS ' + (data.slot || '1');
-            document.getElementById('active-system').innerText = data.system || 'UruguayNet';
-            
-            const now = new Date().toLocaleTimeString();
-            document.getElementById('active-time').innerHTML = `<i class="fa-regular fa-clock mr-1"></i> Transmitiendo (${now})`;
-        }
-
-        function addLastHeardRow(data) {
-            const tbody = document.getElementById('last-heard-body');
-            const now = new Date().toLocaleTimeString();
-
-            const row = document.createElement('tr');
-            row.className = 'hover:bg-slate-800/40 transition-colors';
-            row.innerHTML = `
-                <td class="py-3 px-4 font-mono text-xs text-slate-400">${now}</td>
-                <td class="py-3 px-4 font-bold text-blue-400 font-mono">${data.callsign || 'N/A'}</td>
-                <td class="py-3 px-4 text-slate-300 font-mono text-xs">${data.source_id || data.id || '---'}</td>
-                <td class="py-3 px-4"><span class="bg-blue-600/20 text-blue-400 text-xs font-semibold px-2 py-0.5 rounded border border-blue-500/30 font-mono">TG ${data.dest_id || data.tg || '---'}</span></td>
-                <td class="py-3 px-4 text-slate-300">TS ${data.slot || '1'}</td>
-                <td class="py-3 px-4 text-slate-400 font-mono text-xs">${data.duration ? data.duration + 's' : 'En curso'}</td>
-            `;
-
-            tbody.insertBefore(row, tbody.firstChild);
-
-            // Limitar a 15 entradas guardadas
-            if (tbody.rows.length > 15) {
-                tbody.deleteRow(tbody.rows.length - 1);
+        function updateDashboard(data) {
+            // Lógica para poblar los datos cuando HBLink emita tráfico en tiempo real
+            if (data && data.CALLSIGN) {
+                activeCallDiv.innerHTML = `
+                    <div class="text-lg font-bold text-emerald-400">${data.CALLSIGN}</div>
+                    <div class="text-sm text-slate-300">TalkGroup: <span class="font-semibold text-white">${data.TG || 'N/A'}</span></div>
+                    <div class="text-xs text-slate-400">Slot: ${data.TS || '1'}</div>
+                `;
             }
         }
 
-        // Iniciar
-        window.onload = connectWebSocket;
+        // Iniciar la conexión al cargar la página
+        initWebSocket();
     </script>
 </body>
 </html>
