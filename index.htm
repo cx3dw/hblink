@@ -32,7 +32,7 @@
             </div>
             <div>
                 <h1 class="font-bold text-lg tracking-wide">HBLink <span class="text-blue-500">UruguayNet</span></h1>
-                <p class="text-xs text-slate-400">Red Personal DMR</p>
+                <p class="text-xs text-slate-400">Red Personal DMR / Multi-Modo</p>
             </div>
         </div>
         <!-- Estado de Conexión WebSocket -->
@@ -81,39 +81,101 @@
             </div>
         </section>
 
-        <!-- Tabla Last Heard (Últimas Transmisiones) -->
-        <section class="bg-cardbg border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
-            <div class="p-5 border-b border-slate-800 flex justify-between items-center">
-                <h2 class="font-bold text-base flex items-center space-x-2">
-                    <i class="fa-solid fa-list-ul text-blue-500"></i>
-                    <span>Últimas Transmisiones (Last Heard)</span>
-                </h2>
-                <span class="text-xs text-slate-400">Actualización en vivo</span>
-            </div>
+        <!-- Grid de Contenedores y Last Heard -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-900/50 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
-                            <th class="py-3 px-4 font-semibold">Hora</th>
-                            <th class="py-3 px-4 font-semibold">Indicativo (Callsign)</th>
-                            <th class="py-3 px-4 font-semibold">DMR ID</th>
-                            <th class="py-3 px-4 font-semibold">Talk Group</th>
-                            <th class="py-3 px-4 font-semibold">Slot</th>
-                            <th class="py-3 px-4 font-semibold">Duración</th>
-                        </tr>
-                    </thead>
-                    <tbody id="last-heard-body" class="divide-y divide-slate-800/60 text-sm">
-                        <!-- Las filas se agregarán dinámicamente -->
-                        <tr id="empty-row">
-                            <td colspan="6" class="py-8 text-center text-slate-500 italic">
-                                Esperando transmisiones desde HBLink...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+            <!-- Panel Izquierdo: Estado de Contenedores -->
+            <section class="bg-cardbg border border-slate-800 rounded-2xl shadow-xl p-5 space-y-4 lg:col-span-1">
+                <h2 class="font-bold text-base flex items-center space-x-2 border-b border-slate-800 pb-3">
+                    <i class="fa-solid fa-server text-emerald-400"></i>
+                    <span>Estado de Contenedores</span>
+                </h2>
+
+                <div class="space-y-3">
+                    <!-- YSF Gateway -->
+                    <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-slate-200">YSF Gateway</h4>
+                                <p class="text-[11px] text-slate-400">Sistema C4FM / Fusion</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded">Online</span>
+                    </div>
+
+                    <!-- P25 Gateway -->
+                    <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-slate-200">P25 Gateway</h4>
+                                <p class="text-[11px] text-slate-400">Sistema Digital P25</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded">Online</span>
+                    </div>
+
+                    <!-- NXDN-Bridge-DMR -->
+                    <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-slate-200">NXDN-Bridge-DMR</h4>
+                                <p class="text-[11px] text-slate-400">Enrutamiento activo</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded">Online</span>
+                    </div>
+
+                    <!-- HBLink3 Master -->
+                    <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-slate-200">HBLink3 Master</h4>
+                                <p class="text-[11px] text-slate-400">Control de red DMR</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded">Online</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Panel Derecho: Tabla Last Heard -->
+            <section class="bg-cardbg border border-slate-800 rounded-2xl shadow-xl overflow-hidden lg:col-span-2 flex flex-col">
+                <div class="p-5 border-b border-slate-800 flex justify-between items-center">
+                    <h2 class="font-bold text-base flex items-center space-x-2">
+                        <i class="fa-solid fa-list-ul text-blue-500"></i>
+                        <span>Últimas Transmisiones (Last Heard)</span>
+                    </h2>
+                    <span class="text-xs text-slate-400">Actualización en vivo</span>
+                </div>
+
+                <div class="overflow-x-auto flex-1">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900/50 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
+                                <th class="py-3 px-4 font-semibold">Hora</th>
+                                <th class="py-3 px-4 font-semibold">Indicativo</th>
+                                <th class="py-3 px-4 font-semibold">ID</th>
+                                <th class="py-3 px-4 font-semibold">TG</th>
+                                <th class="py-3 px-4 font-semibold">Slot</th>
+                                <th class="py-3 px-4 font-semibold">Duración</th>
+                            </tr>
+                        </thead>
+                        <tbody id="last-heard-body" class="divide-y divide-slate-800/60 text-sm">
+                            <tr id="empty-row">
+                                <td colspan="6" class="py-8 text-center text-slate-500 italic">
+                                    Esperando transmisiones desde HBLink...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div>
 
     </main>
 
@@ -124,7 +186,6 @@
 
     <!-- Lógica de Conexión WebSocket -->
     <script>
-        // Dominio de tu VPS
         const wsUrl = 'ws://7481uruguaynet.2mydns.net:9100';
         let socket;
 
@@ -147,7 +208,6 @@
             socket = new WebSocket(wsUrl);
 
             socket.onopen = function() {
-                console.log("Conectado exitosamente a 7481uruguaynet.2mydns.net:9100");
                 updateStatus(true);
             };
 
@@ -155,11 +215,9 @@
                 try {
                     const data = JSON.parse(event.data);
                     
-                    // Quitar la fila de espera la primera vez que entran datos
                     const emptyRow = document.getElementById('empty-row');
                     if (emptyRow) emptyRow.remove();
 
-                    // Procesamiento de tramas de HBLink3 / HBMonitor
                     if (data.callsign || data.source_id) {
                         updateActiveCall(data);
                         addLastHeardRow(data);
@@ -171,11 +229,10 @@
 
             socket.onclose = function() {
                 updateStatus(false);
-                setTimeout(connectWebSocket, 3000); // Reintento de conexión cada 3 segundos
+                setTimeout(connectWebSocket, 3000);
             };
 
             socket.onerror = function(err) {
-                console.error("Error en socket:", err);
                 socket.close();
             };
         }
@@ -208,13 +265,11 @@
 
             tbody.insertBefore(row, tbody.firstChild);
 
-            // Limitar a 15 entradas guardadas
             if (tbody.rows.length > 15) {
                 tbody.deleteRow(tbody.rows.length - 1);
             }
         }
 
-        // Iniciar
         window.onload = connectWebSocket;
     </script>
 </body>
