@@ -3,226 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UruguayNet | Multi-Mode Dashboard</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        darkbg: '#0f172a',
-                        cardbg: '#1e293b',
-                        accent: '#3b82f6',
-                        success: '#10b981'
-                    }
-                }
-            }
+    <title>Dashboard DMR / NXDN En Vivo</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent-blue: #38bdf8;
+            --accent-green: #22c55e;
         }
-    </script>
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: rgba(15, 23, 42, 0.6);
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: rgba(56, 189, 248, 0.05);
+            transition: background 0.2s ease;
+        }
+
+        .badge-mode {
+            background-color: rgba(34, 197, 94, 0.15);
+            color: var(--accent-green);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .badge-tg {
+            background-color: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
+        .callsign {
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .time {
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        @media (max-width: 768px) {
+            th, td { padding: 10px 12px; font-size: 0.85rem; }
+        }
+    </style>
 </head>
-<body class="bg-darkbg text-slate-100 min-h-screen font-sans">
-
-    <!-- Header Principal -->
-    <header class="bg-cardbg border-b border-slate-800 shadow-lg p-4 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-3">
-                <div class="bg-blue-600 p-2.5 rounded-xl shadow-md shadow-blue-500/20">
-                    <i class="fa-solid fa-tower-broadcast text-xl text-white"></i>
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold tracking-wide">UruguayNet Hub</h1>
-                    <p class="text-xs text-slate-400">Sistema Multi-Reflector (DMR • NXDN • XLX)</p>
-                </div>
-            </div>
-            <!-- Estado de Conexión WSS -->
-            <div class="flex items-center space-x-2 bg-slate-900 px-4 py-2 rounded-full border border-slate-700">
-                <span class="relative flex h-3 w-3">
-                  <span id="ping-dot" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span id="status-dot" class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                </span>
-                <span id="connection-status" class="text-xs font-medium text-emerald-400">Conectando...</span>
-            </div>
+<body>
+    <div class="container">
+        <h1>📡 Tráfico DMR / NXDN en Tiempo Real</h1>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hora</th>
+                        <th>Modo</th>
+                        <th>Estación (Callsign - ID)</th>
+                        <th>País</th>
+                        <th>Destino</th>
+                    </tr>
+                </thead>
+                <tbody id="traffic-body">
+                    <!-- Las transmisiones entran dinámicamente aquí -->
+                </tbody>
+            </table>
         </div>
-    </header>
+    </div>
 
-    <!-- Contenido Principal -->
-    <main class="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
-
-        <!-- Tarjetas de Resumen -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-cardbg border border-slate-800 p-4 rounded-2xl shadow-lg flex items-center space-x-4">
-                <div class="p-3 bg-blue-500/10 text-blue-400 rounded-xl"><i class="fa-solid fa-signal text-xl"></i></div>
-                <div>
-                    <p class="text-xs text-slate-400 font-medium">Estado General</p>
-                    <h3 class="text-lg font-bold text-slate-100">Operativo</h3>
-                </div>
-            </div>
-            <div class="bg-cardbg border border-slate-800 p-4 rounded-2xl shadow-lg flex items-center space-x-4">
-                <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl"><i class="fa-solid fa-users text-xl"></i></div>
-                <div>
-                    <p class="text-xs text-slate-400 font-medium">Paquetes Recibidos</p>
-                    <h3 id="packet-count" class="text-lg font-bold text-slate-100">0</h3>
-                </div>
-            </div>
-            <div class="bg-cardbg border border-slate-800 p-4 rounded-2xl shadow-lg flex items-center space-x-4">
-                <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl"><i class="fa-solid fa-walkie-talkie text-xl"></i></div>
-                <div>
-                    <p class="text-xs text-slate-400 font-medium">Última Transmisión</p>
-                    <h3 id="current-tx" class="text-sm font-bold text-amber-400">En espera...</h3>
-                </div>
-            </div>
-            <div class="bg-cardbg border border-slate-800 p-4 rounded-2xl shadow-lg flex items-center space-x-4">
-                <div class="p-3 bg-purple-500/10 text-purple-400 rounded-xl"><i class="fa-solid fa-server text-xl"></i></div>
-                <div>
-                    <p class="text-xs text-slate-400 font-medium">Modos Activos</p>
-                    <h3 class="text-lg font-bold text-slate-100">DMR / NXDN / XLX</h3>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sección de Tablas -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            <!-- Panel 1: Tráfico en Vivo -->
-            <div class="bg-cardbg border border-slate-800 rounded-2xl shadow-xl overflow-hidden flex flex-col">
-                <div class="bg-slate-800/50 px-5 py-4 border-b border-slate-800 flex justify-between items-center">
-                    <h2 class="font-bold text-sm tracking-wide uppercase flex items-center gap-2">
-                        <i class="fa-solid fa-wave-square text-blue-400"></i> Tráfico en Tiempo Real
-                    </h2>
-                    <span class="text-xs bg-blue-500/20 text-blue-400 px-2.5 py-1 rounded-full font-medium">En Vivo</span>
-                </div>
-                <div class="overflow-x-auto p-4 flex-grow">
-                    <table class="w-full text-left border-collapse text-sm">
-                        <thead>
-                            <tr class="text-slate-400 border-b border-slate-800 text-xs uppercase">
-                                <th class="pb-3 px-3">Hora</th>
-                                <th class="pb-3 px-3">Modo</th>
-                                <th class="pb-3 px-3">Indicativo</th>
-                                <th class="pb-3 px-3">Destino / TG</th>
-                            </tr>
-                        </thead>
-                        <tbody id="traffic-table-body" class="divide-y divide-slate-800/50">
-                            <!-- Los datos se insertarán aquí dinámicamente vía WebSocket -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Panel 2: Estado de Puentes VPS -->
-            <div class="bg-cardbg border border-slate-800 rounded-2xl shadow-xl overflow-hidden flex flex-col">
-                <div class="bg-slate-800/50 px-5 py-4 border-b border-slate-800 flex justify-between items-center">
-                    <h2 class="font-bold text-sm tracking-wide uppercase flex items-center gap-2">
-                        <i class="fa-solid fa-network-wired text-emerald-400"></i> Estado de Contenedores
-                    </h2>
-                    <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full font-medium">Sincronizado</span>
-                </div>
-                <div class="p-5 space-y-4">
-                    <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
-                            <div>
-                                <h4 class="text-sm font-semibold">NXDN-Bridge-DMR</h4>
-                                <p class="text-xs text-slate-400">Enrutamiento activo</p>
-                            </div>
-                        </div>
-                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded">Online</span>
-                    </div>
-                    <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
-                            <div>
-                                <h4 class="text-sm font-semibold">HBLink3 Master</h4>
-                                <p class="text-xs text-slate-400">Control de red DMR</p>
-                            </div>
-                        </div>
-                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded">Online</span>
-                    </div>
-                    <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
-                            <div>
-                                <h4 class="text-sm font-semibold">XLX Reflector</h4>
-                                <p class="text-xs text-slate-400">Módulos activos</p>
-                            </div>
-                        </div>
-                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded">Online</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <footer class="text-center py-6 text-xs text-slate-500 border-t border-slate-800 mt-12">
-        UruguayNet Dashboard &copy; 2026 - Conectado a VPS en tiempo real
-    </footer>
-
-    <!-- Script de Conexión WSS -->
     <script>
-        let packetCount = 0;
-        const statusText = document.getElementById('connection-status');
-        const statusDot = document.getElementById('status-dot');
-        const pingDot = document.getElementById('ping-dot');
+        // Conexión al WebSocket de tu VPS (Asegúrate de usar wss:// si usas HTTPS o ws:// si es directo con IP)
+        const ws = new WebSocket('ws://TU_IP_O_DOMINIO:9200');
 
-        function connectWS() {
-            // Conexión segura con el endpoint de tu VPS
-            const ws = new WebSocket('wss://7481uruguaynet.2mydns.net/ws');
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            const tbody = document.getElementById('traffic-body');
 
-            ws.onopen = function() {
-                statusText.textContent = "Conectado (WSS)";
-                statusText.className = "text-xs font-medium text-emerald-400";
-                statusDot.className = "relative inline-flex rounded-full h-3 w-3 bg-emerald-500";
-                pingDot.style.display = "block";
-            };
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="time">${data.time}</td>
+                <td><span class="badge-mode">${data.mode}</span></td>
+                <td class="callsign">${data.callsign}</td>
+                <td>${data.country}</td>
+                <td><span class="badge-tg">${data.destination}</span></td>
+            `;
 
-            ws.onmessage = function(event) {
-                const data = JSON.parse(event.data);
-                packetCount++;
-                document.getElementById('packet-count').textContent = packetCount;
-                document.getElementById('current-tx').textContent = `${data.callsign} (${data.mode})`;
+            // Inserta la nueva transmisión al principio de la tabla
+            tbody.insertBefore(tr, tbody.firstChild);
 
-                const tbody = document.getElementById('traffic-table-body');
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-slate-800/30 transition-colors animate-fade-in';
-                
-                let badgeColor = "bg-blue-500/15 text-blue-400";
-                if (data.mode === "NXDN") badgeColor = "bg-emerald-500/15 text-emerald-400";
-                if (data.mode === "XLX") badgeColor = "bg-purple-500/15 text-purple-400";
-
-                row.innerHTML = `
-                    <td class="py-3 px-3 text-slate-400 text-xs">${data.time}</td>
-                    <td class="py-3 px-3"><span class="${badgeColor} px-2 py-0.5 rounded text-xs font-semibold">${data.mode}</span></td>
-                    <td class="py-3 px-3 font-bold text-slate-200">${data.callsign}</td>
-                    <td class="py-3 px-3 text-slate-300">${data.destination}</td>
-                `;
-                
-                tbody.prepend(row);
-                // Mantener máximo 15 filas en pantalla
-                if (tbody.children.length > 15) {
-                    tbody.lastElementChild.remove();
-                }
-            };
-
-            ws.onclose = function() {
-                statusText.textContent = "Desconectado (Reintentando...)";
-                statusText.className = "text-xs font-medium text-amber-400";
-                statusDot.className = "relative inline-flex rounded-full h-3 w-3 bg-amber-500";
-                pingDot.style.display = "none";
-                // Intentar reconectar cada 3 segundos
-                setTimeout(connectWS, 3000);
-            };
-
-            ws.onerror = function(err) {
-                console.error("Error en WebSocket:", err);
-                ws.close();
-            };
-        }
-
-        // Iniciar conexión al cargar la página
-        connectWS();
+            // Mantiene un límite de 30 filas para evitar saturar la pantalla
+            if (tbody.rows.length > 30) {
+                tbody.deleteRow(tbody.rows.length - 1);
+            }
+        };
     </script>
 </body>
 </html>
