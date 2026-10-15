@@ -32,7 +32,7 @@
             </div>
             <div>
                 <h1 class="font-bold text-lg tracking-wide">HBLink <span class="text-blue-500">UruguayNet</span></h1>
-                <p class="text-xs text-slate-400">Red Personal DMR / Multi-Modo</p>
+                <p class="text-xs text-slate-400">Red Personal DMR</p>
             </div>
         </div>
         <!-- Estado de Conexión WebSocket -->
@@ -81,54 +81,46 @@
             </div>
         </section>
 
-        <!-- Bloque Principal: Contenedores y Tabla Last Heard -->
+        <!-- Bloque de Contenedores y Last Heard organizados -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <!-- Panel Izquierdo: Estado de Contenedores -->
-            <div class="bg-cardbg border border-slate-800 rounded-2xl shadow-xl p-5 space-y-4 lg:col-span-1">
+            <!-- Panel de Contenedores -->
+            <section class="bg-cardbg border border-slate-800 rounded-2xl shadow-xl p-5 space-y-4 lg:col-span-1">
                 <h2 class="font-bold text-base flex items-center space-x-2 border-b border-slate-800 pb-3">
                     <i class="fa-solid fa-server text-emerald-400"></i>
                     <span>Estado de Contenedores</span>
                 </h2>
-
                 <div class="space-y-3">
-                    <!-- YSF Gateway -->
                     <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
                         <div class="flex items-center space-x-3">
                             <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
                             <div>
                                 <h4 class="text-sm font-semibold text-slate-200">YSF Gateway</h4>
-                                <p class="text-[11px] text-slate-400">Sistema C4FM / Fusion</p>
+                                <p class="text-[11px] text-slate-400">C4FM / Fusion</p>
                             </div>
                         </div>
-                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded">Online</span>
+                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded">Online</span>
                     </div>
-
-                    <!-- P25 Gateway -->
                     <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
                         <div class="flex items-center space-x-3">
                             <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
                             <div>
                                 <h4 class="text-sm font-semibold text-slate-200">P25 Gateway</h4>
-                                <p class="text-[11px] text-slate-400">Sistema Digital P25</p>
+                                <p class="text-[11px] text-slate-400">Sistema P25</p>
                             </div>
                         </div>
-                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded">Online</span>
+                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded">Online</span>
                     </div>
-
-                    <!-- NXDN Bridge -->
                     <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
                         <div class="flex items-center space-x-3">
                             <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
                             <div>
-                                <h4 class="text-sm font-semibold text-slate-200">NXDN-Bridge-DMR</h4>
-                                <p class="text-[11px] text-slate-400">Enrutamiento activo</p>
+                                <h4 class="text-sm font-semibold text-slate-200">NXDN Bridge</h4>
+                                <p class="text-[11px] text-slate-400">Enrutamiento DMR</p>
                             </div>
                         </div>
-                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded">Online</span>
+                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded">Online</span>
                     </div>
-
-                    <!-- HBLink3 Master -->
                     <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
                         <div class="flex items-center space-x-3">
                             <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
@@ -137,13 +129,13 @@
                                 <p class="text-[11px] text-slate-400">Control de red DMR</p>
                             </div>
                         </div>
-                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded">Online</span>
+                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded">Online</span>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Panel Derecho: Tabla Last Heard -->
-            <div class="bg-cardbg border border-slate-800 rounded-2xl shadow-xl overflow-hidden lg:col-span-2 flex flex-col">
+            <!-- Tabla Last Heard (Tu tabla original intacta) -->
+            <section class="bg-cardbg border border-slate-800 rounded-2xl shadow-xl overflow-hidden lg:col-span-2 flex flex-col">
                 <div class="p-5 border-b border-slate-800 flex justify-between items-center">
                     <h2 class="font-bold text-base flex items-center space-x-2">
                         <i class="fa-solid fa-list-ul text-blue-500"></i>
@@ -157,9 +149,9 @@
                         <thead>
                             <tr class="bg-slate-900/50 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
                                 <th class="py-3 px-4 font-semibold">Hora</th>
-                                <th class="py-3 px-4 font-semibold">Indicativo</th>
-                                <th class="py-3 px-4 font-semibold">ID</th>
-                                <th class="py-3 px-4 font-semibold">TG</th>
+                                <th class="py-3 px-4 font-semibold">Indicativo (Callsign)</th>
+                                <th class="py-3 px-4 font-semibold">DMR ID</th>
+                                <th class="py-3 px-4 font-semibold">Talk Group</th>
                                 <th class="py-3 px-4 font-semibold">Slot</th>
                                 <th class="py-3 px-4 font-semibold">Duración</th>
                             </tr>
@@ -173,7 +165,7 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </section>
 
         </div>
 
@@ -208,7 +200,7 @@
             socket = new WebSocket(wsUrl);
 
             socket.onopen = function() {
-                console.log("Conectado exitosamente al servidor WebSocket en 9100");
+                console.log("Conectado exitosamente a 7481uruguaynet.2mydns.net:9100");
                 updateStatus(true);
             };
 
@@ -219,7 +211,7 @@
                     const emptyRow = document.getElementById('empty-row');
                     if (emptyRow) emptyRow.remove();
 
-                    if (data.callsign || data.source_id || data.radio_id) {
+                    if (data.callsign || data.source_id) {
                         updateActiveCall(data);
                         addLastHeardRow(data);
                     }
@@ -241,8 +233,8 @@
 
         function updateActiveCall(data) {
             document.getElementById('active-callsign').innerText = data.callsign || 'Desconocido';
-            document.getElementById('active-id').innerText = 'ID: ' + (data.source_id || data.radio_id || data.id || '---');
-            document.getElementById('active-tg').innerText = 'TG ' + (data.dest_id || data.destination || data.tg || '---');
+            document.getElementById('active-id').innerText = 'ID: ' + (data.source_id || data.id || '---');
+            document.getElementById('active-tg').innerText = 'TG ' + (data.dest_id || data.tg || '---');
             document.getElementById('active-slot').innerText = 'TS ' + (data.slot || '1');
             document.getElementById('active-system').innerText = data.system || 'UruguayNet';
             
@@ -252,15 +244,15 @@
 
         function addLastHeardRow(data) {
             const tbody = document.getElementById('last-heard-body');
-            const now = data.time || new Date().toLocaleTimeString();
+            const now = new Date().toLocaleTimeString();
 
             const row = document.createElement('tr');
             row.className = 'hover:bg-slate-800/40 transition-colors';
             row.innerHTML = `
                 <td class="py-3 px-4 font-mono text-xs text-slate-400">${now}</td>
                 <td class="py-3 px-4 font-bold text-blue-400 font-mono">${data.callsign || 'N/A'}</td>
-                <td class="py-3 px-4 text-slate-300 font-mono text-xs">${data.source_id || data.radio_id || data.id || '---'}</td>
-                <td class="py-3 px-4"><span class="bg-blue-600/20 text-blue-400 text-xs font-semibold px-2 py-0.5 rounded border border-blue-500/30 font-mono">TG ${data.dest_id || data.destination || data.tg || '---'}</span></td>
+                <td class="py-3 px-4 text-slate-300 font-mono text-xs">${data.source_id || data.id || '---'}</td>
+                <td class="py-3 px-4"><span class="bg-blue-600/20 text-blue-400 text-xs font-semibold px-2 py-0.5 rounded border border-blue-500/30 font-mono">TG ${data.dest_id || data.tg || '---'}</span></td>
                 <td class="py-3 px-4 text-slate-300">TS ${data.slot || '1'}</td>
                 <td class="py-3 px-4 text-slate-400 font-mono text-xs">${data.duration ? data.duration + 's' : 'En curso'}</td>
             `;
