@@ -34,7 +34,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-wide">UruguayNet Hub</h1>
-                    <p class="text-xs text-slate-400">Sistema Multi-Reflector (DMR • NXDN • XLX)</p>
+                    <p class="text-xs text-slate-400">Sistema Multi-Reflector (DMR • YSF • NXDN • XLX)</p>
                 </div>
             </div>
             <!-- Estado de Conexión WSS -->
@@ -78,7 +78,7 @@
                 <div class="p-3 bg-purple-500/10 text-purple-400 rounded-xl"><i class="fa-solid fa-server text-xl"></i></div>
                 <div>
                     <p class="text-xs text-slate-400 font-medium">Modos Activos</p>
-                    <h3 class="text-lg font-bold text-slate-100">DMR / NXDN / XLX</h3>
+                    <h3 class="text-lg font-bold text-slate-100">DMR / YSF / NXDN</h3>
                 </div>
             </div>
         </div>
@@ -120,6 +120,18 @@
                     <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full font-medium">Sincronizado</span>
                 </div>
                 <div class="p-5 space-y-4">
+                    <!-- Contenedor YSF Gateway -->
+                    <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                            <div>
+                                <h4 class="text-sm font-semibold">YSF Gateway</h4>
+                                <p class="text-xs text-slate-400">Sistema C4FM / Fusion</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded">Online</span>
+                    </div>
+
                     <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
                         <div class="flex items-center space-x-3">
                             <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
@@ -168,11 +180,10 @@
         const pingDot = document.getElementById('ping-dot');
 
         function connectWS() {
-            // Conexión segura con el endpoint de tu VPS
-            const ws = new WebSocket('wss://7481uruguaynet.2mydns.net/ws');
+            const ws = new WebSocket('ws://7481uruguaynet.2mydns.net:9100');
 
             ws.onopen = function() {
-                statusText.textContent = "Conectado (WSS)";
+                statusText.textContent = "Conectado";
                 statusText.className = "text-xs font-medium text-emerald-400";
                 statusDot.className = "relative inline-flex rounded-full h-3 w-3 bg-emerald-500";
                 pingDot.style.display = "block";
@@ -182,36 +193,35 @@
                 const data = JSON.parse(event.data);
                 packetCount++;
                 document.getElementById('packet-count').textContent = packetCount;
-                document.getElementById('current-tx').textContent = `${data.callsign} (${data.mode})`;
+                document.getElementById('current-tx').textContent = `${data.callsign} (${data.mode || 'DMR'})`;
 
                 const tbody = document.getElementById('traffic-table-body');
                 const row = document.createElement('tr');
                 row.className = 'hover:bg-slate-800/30 transition-colors animate-fade-in';
                 
                 let badgeColor = "bg-blue-500/15 text-blue-400";
+                if (data.mode === "YSF" || data.mode === "FUSION") badgeColor = "bg-amber-500/15 text-amber-400";
                 if (data.mode === "NXDN") badgeColor = "bg-emerald-500/15 text-emerald-400";
                 if (data.mode === "XLX") badgeColor = "bg-purple-500/15 text-purple-400";
 
                 row.innerHTML = `
-                    <td class="py-3 px-3 text-slate-400 text-xs">${data.time}</td>
-                    <td class="py-3 px-3"><span class="${badgeColor} px-2 py-0.5 rounded text-xs font-semibold">${data.mode}</span></td>
+                    <td class="py-3 px-3 text-slate-400 text-xs">${data.time || new Date().toLocaleTimeString()}</td>
+                    <td class="py-3 px-3"><span class="${badgeColor} px-2 py-0.5 rounded text-xs font-semibold">${data.mode || 'DMR'}</span></td>
                     <td class="py-3 px-3 font-bold text-slate-200">${data.callsign}</td>
-                    <td class="py-3 px-3 text-slate-300">${data.destination}</td>
+                    <td class="py-3 px-3 text-slate-300">${data.destination || 'N/A'}</td>
                 `;
                 
                 tbody.prepend(row);
-                // Mantener máximo 15 filas en pantalla
                 if (tbody.children.length > 15) {
                     tbody.lastElementChild.remove();
                 }
             };
 
             ws.onclose = function() {
-                statusText.textContent = "Desconectado (Reintentando...)";
+                statusText.textContent = "Reconectando...";
                 statusText.className = "text-xs font-medium text-amber-400";
                 statusDot.className = "relative inline-flex rounded-full h-3 w-3 bg-amber-500";
                 pingDot.style.display = "none";
-                // Intentar reconectar cada 3 segundos
                 setTimeout(connectWS, 3000);
             };
 
@@ -221,7 +231,6 @@
             };
         }
 
-        // Iniciar conexión al cargar la página
         connectWS();
     </script>
 </body>
